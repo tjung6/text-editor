@@ -14,19 +14,12 @@ import javax.swing.*;
 // o			00ed	00D3	01D2	00F2
 // u 			016B	00FA	01D4	00F9
 public class TextEditor extends JFrame {
-	private JTextArea edittext = new JTextArea(); 
+	private JTextArea textArea = new JTextArea(); 
 	private JFileChooser filechooser = new JFileChooser(); 
-	
-	private Action openaction = new openaction(); 
-	private Action saveaction = new saveaction(); 
-	private Action exitaction = new exitaction();
-	
-	Map<Integer, String> map; 
+	private Action open = new openAction(); 
+	private Action save = new saveAction();	
+	private Map<Integer, String> map; 
 
-	public static void main(String[] args) {
-		new TextEditor(); 
-	}
-	
 	public TextEditor() {
 		map = new HashMap<Integer, String>(); 
 		map.put('a' + '1', "\u0101"); 
@@ -55,42 +48,47 @@ public class TextEditor extends JFrame {
 		map.put('u' + '4', "\u00F9");
 		map.put('u' + '5', "\u01DA");
 		
-		edittext = new JTextArea(15, 60);
-		edittext.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+		textArea = new JTextArea(15, 60);
+		textArea.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
 		// Sets font style & size 
-		edittext.setFont(new Font("Calibri", Font.PLAIN, 16));
+		textArea.setFont(new Font("Calibri", Font.PLAIN, 20));
 		// Sets background color 
-		edittext.setBackground(Color.BLACK);
+		textArea.setBackground(Color.BLACK);
 		// Sets font color 
-		edittext.setForeground(Color.WHITE);
-		JScrollPane scrolltext = new JScrollPane(edittext); 
+		textArea.setForeground(Color.WHITE);
+		JScrollPane scrolltext = new JScrollPane(textArea); 
 		
 		JPanel content = new JPanel(); 
 		content.setLayout(new BorderLayout()); 
 		content.add(scrolltext, BorderLayout.CENTER); 
-		
 		JMenuBar menubar = new JMenuBar(); 
-		JMenu menu = menubar.add(new JMenu("File"));
-		menu.setMnemonic('F');
-		menu.add(openaction); 
-		menu.add(saveaction); 
-		menu.addSeparator();
-		menu.add(exitaction); 
+		
+		JButton button = new JButton("Open");
+		menubar.add(button); 
+		button.addActionListener(open);
+		
+		JButton button2 = new JButton("Save");
+		menubar.add(button2); 
+		button2.addActionListener(save);
 		
 		setContentPane(content); 
 		setJMenuBar(menubar); 
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
-		setTitle("Simple Text Editor"); 
+		// setTitle("Pinyin Text Editor"); 
 		pack(); 
 		setLocationRelativeTo(null); 
 		setVisible(true); 
 		
-		edittext.addKeyListener(new AL());
+		textArea.addKeyListener(new AL());
 	}
 	
-	class openaction extends AbstractAction {
-		public openaction() {
+	public static void main(String[] args) {
+		new TextEditor(); 
+	}
+	
+	class openAction extends AbstractAction {
+		public openAction() {
 			super("Open..."); 
 			putValue(MNEMONIC_KEY, new Integer('0')); 
 		}
@@ -101,7 +99,7 @@ public class TextEditor extends JFrame {
 				File f = filechooser.getSelectedFile(); 
 				try {
 					FileReader reader = new FileReader(f); 
-					edittext.read(reader, ""); 
+					textArea.read(reader, ""); 
 				} catch (IOException e) {
 					System.out.println(e); 
 					System.exit(1); 
@@ -110,9 +108,9 @@ public class TextEditor extends JFrame {
 		}
 	}
 	
-	class saveaction extends AbstractAction {
-		public saveaction() {
-			super("Save..."); 
+	class saveAction extends AbstractAction {
+		public saveAction() {
+			super("Save"); 
 			putValue(MNEMONIC_KEY, new Integer('S')); 
 		}
 
@@ -123,7 +121,7 @@ public class TextEditor extends JFrame {
 				File f = filechooser.getSelectedFile(); 
 				try {
 					FileWriter writer = new FileWriter(f); 
-					edittext.write(writer);
+					textArea.write(writer);
 				} catch (IOException e) {
 					JOptionPane.showMessageDialog(TextEditor.this, e);
 					System.exit(1);
@@ -132,28 +130,10 @@ public class TextEditor extends JFrame {
 		}
 	}
 	
-	class exitaction extends AbstractAction {
-		public exitaction() {
-			super("Exit"); 
-			putValue(MNEMONIC_KEY, new Integer('X')); 
-		}
-		
-		public void actionPerformed(ActionEvent xs) {
-			System.exit(0);
-			// JOptionPane.showMessageDialog(texteditor.this, xs); 
-		}
-	}
-	
 	// extends KeyAdapter ?? 
 	class AL implements KeyListener {
 		public void keyPressed(KeyEvent e) {
-			if (e.getKeyChar() == '3') {
-				// System.exit(0);
-				// edittext.append("Hello");
-				// edittext.setText("" + edittext.getText().substring(0, edittext.getText().length() - 1));
-				// getToolkit().beep();
-				e.consume();				
-			} 
+
 		}
 		
 		public void keyReleased(KeyEvent e) {
@@ -161,11 +141,11 @@ public class TextEditor extends JFrame {
 		}
 
 		public void keyTyped(KeyEvent e) {
-			if (e.getKeyChar() >= '1' && e.getKeyChar() <= '4' && edittext.getText().length() != 0) {
-				char letter = edittext.getText().charAt(edittext.getText().length() - 1);
+			if (e.getKeyChar() >= '1' && e.getKeyChar() <= '4' && textArea.getText().length() != 0) {
+				char letter = textArea.getText().charAt(textArea.getText().length() - 1);
 				if (letter == 'a' || letter == 'e' || letter == 'i' || letter == 'o' || letter == 'u') {
-					edittext.setText("" + edittext.getText().substring(0, edittext.getText().length() - 1));
-					edittext.append(map.get(letter + e.getKeyChar())); 
+					textArea.setText("" + textArea.getText().substring(0, textArea.getText().length() - 1));
+					textArea.append(map.get(letter + e.getKeyChar())); 
 					e.consume();
 				}
 			}

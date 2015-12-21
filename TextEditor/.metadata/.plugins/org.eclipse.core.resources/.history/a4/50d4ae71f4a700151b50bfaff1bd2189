@@ -7,6 +7,12 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.swing.*; 
 
+// Unicodes 	First	Second	Third	Fourth
+// a 			0101	00E1	01CE	00E0
+// e			0113	00E9	011B	00E8
+// i			012B 	00CE	101CF	206A 
+// o			00ed	00D3	01D2	00F2
+// u 			016B	00FA	01D4	00F9
 public class TextEditor extends JFrame {
 	private JTextArea textArea = new JTextArea(); 
 	private JFileChooser filechooser = new JFileChooser(); 
@@ -15,7 +21,6 @@ public class TextEditor extends JFrame {
 	private Map<Integer, String> accents; 
 
 	public TextEditor() {
-		accents = new HashMap<Integer, String>(); 
 		setUpTones(); 
 		
 		textArea = new JTextArea(15, 60);
@@ -46,7 +51,6 @@ public class TextEditor extends JFrame {
 		
 		JMenu help = new JMenu("Help"); 
 		menubar.add(help); 
-		help.add("Before a vowel..."); 
 		help.add("Press 1 for First Tone");
 		help.add("Press 2 for Second Tone");
 		help.add("Press 3 for Third Tone");
