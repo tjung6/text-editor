@@ -12,7 +12,13 @@ public class TextEditor extends JFrame {
 	private JFileChooser filechooser = new JFileChooser(); 
 	private Action open = new openAction(); 
 	private Action save = new saveAction();	
+	private Action incFont = new biggerFont();
+	private Action decFont = new smallerFont(); 
 	private Map<Integer, String> accents; 
+	
+	private String fontName = "Calibri"; 
+	private int fontStyle = Font.PLAIN; 
+	private int fontSize = 20; 
 
 	public TextEditor() {
 		accents = new HashMap<Integer, String>(); 
@@ -21,7 +27,7 @@ public class TextEditor extends JFrame {
 		textArea = new JTextArea(15, 60);
 		textArea.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
 		// Sets font style & size 
-		textArea.setFont(new Font("Calibri", Font.PLAIN, 20));
+		textArea.setFont(new Font(fontName, fontStyle, fontSize));
 		// Sets background color 
 		textArea.setBackground(Color.BLACK);
 		// Sets font color 
@@ -32,6 +38,8 @@ public class TextEditor extends JFrame {
 		content.setLayout(new BorderLayout()); 
 		content.add(scrolltext, BorderLayout.CENTER); 
 		JMenuBar menubar = new JMenuBar(); 
+		setContentPane(content); 
+		setJMenuBar(menubar); 
 		
 		JButton button = new JButton("Open");
 		menubar.add(button); 
@@ -40,9 +48,14 @@ public class TextEditor extends JFrame {
 		JButton button2 = new JButton("Save");
 		menubar.add(button2); 
 		button2.addActionListener(save);
+				
+		JButton button3 = new JButton("Font++"); 
+		menubar.add(button3); 
+		button3.addActionListener(incFont);
 		
-		setContentPane(content); 
-		setJMenuBar(menubar); 
+		JButton button4 = new JButton("Font--"); 
+		menubar.add(button4); 
+		button4.addActionListener(decFont);
 		
 		JMenu help = new JMenu("Help"); 
 		menubar.add(help); 
@@ -51,18 +64,15 @@ public class TextEditor extends JFrame {
 		help.add("Press 2 for Second Tone");
 		help.add("Press 3 for Third Tone");
 		help.add("Press 4 for Fourth Tone");
+		help.addSeparator();
+		help.add("For \u01DA, press 'u' followed by 5"); 
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
-		// setTitle("Pinyin Text Editor"); 
 		pack(); 
 		setLocationRelativeTo(null); 
 		setVisible(true); 
 		
 		textArea.addKeyListener(new AL());
-	}
-	
-	public static void main(String[] args) {
-		new TextEditor(); 
 	}
 	
 	class openAction extends AbstractAction {
@@ -108,6 +118,22 @@ public class TextEditor extends JFrame {
 		}
 	}
 	
+	class biggerFont extends AbstractAction {
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			fontSize += 4; 
+			textArea.setFont(new Font(fontName, fontStyle, fontSize));
+		}
+	}
+	
+	class smallerFont extends AbstractAction {
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			fontSize -= 4; 
+			textArea.setFont(new Font(fontName, fontStyle, fontSize));
+		}
+	}
+	
 	// extends KeyAdapter ?? 
 	class AL implements KeyListener {
 		public void keyPressed(KeyEvent e) {
@@ -130,6 +156,14 @@ public class TextEditor extends JFrame {
 		}
 	}
 	
+	// When typing Pinyin, user will want a specific vowel to have
+	// a specific tone 
+	// 1 	First Tone
+	// 2	Second Tone
+	// 3 	Third Tone 
+	// 4	Fourth Tone 
+	// "u" is an exception where there is a fifth tone used under
+	// special circumstances 
 	public void setUpTones() {
 		accents.put('a' + '1', "\u0101"); 
 		accents.put('a' + '2', "\u00E1"); 
