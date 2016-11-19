@@ -1,17 +1,18 @@
 package gui;
-import java.awt.*; 
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.io.*;
-import java.util.HashMap;
+import java.awt.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 import javax.swing.*;
 
 public class TextEditorMain {		
-	public TextEditorMain() {	
+	public TextEditorMain() throws IOException {	
 		TextEditorArea textArea = new TextEditorArea(); 
 				
-		JFrame frame = new JFrame(); 
+		JFrame frame = new JFrame("Pinyin Text Editor"); 
 		frame.setPreferredSize(new Dimension(800, 800));
 		
 		JPanel content = new JPanel(); 
@@ -19,15 +20,28 @@ public class TextEditorMain {
 		content.add(new JScrollPane(textArea), BorderLayout.CENTER); 
 		frame.setContentPane(content); 
 		
-		frame.setJMenuBar(new TextEditorMenuBar(frame, textArea)); 
+		// This will load in "pinyin.txt" from Desktop
+		// This can't read in UTF-8 files though 
+//		FileReader reader = new FileReader(new File("C:/Users/Jung/Desktop/pinyin.txt")); 
+//		textArea.read(reader, ""); 
+
+		// This will load in "pinyin.txt" from Desktop
+		// This can read in UTF-8 files   
+		File f = new File(System.getProperty("user.home") + "/Documents/pinyin.txt");
+		if (!f.exists()) {
+			f.createNewFile(); 
+		}
+		BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(System.getProperty("user.home") + "/Documents/pinyin.txt"), "UTF8"));
+		textArea.read(in, "");
 		
+		frame.setJMenuBar(new TextEditorMenuBar(frame, textArea)); 
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
 		frame.pack(); 
 		frame.setLocationRelativeTo(null); 
 		frame.setVisible(true);
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		new TextEditorMain(); 
 	}
 		

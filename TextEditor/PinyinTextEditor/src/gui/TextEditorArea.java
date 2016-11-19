@@ -38,7 +38,7 @@ public class TextEditorArea extends JTextArea {
 
 		}
 			
-		public void keyTyped(KeyEvent e) {
+		public void keyTyped(KeyEvent e) { 
 			if (e.getKeyChar() >= '1' && e.getKeyChar() <= '4' && getText().length() != 0) {
 				int num = getCaretPosition(); 
 				int num2 = getCaretPosition() - 1;
